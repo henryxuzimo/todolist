@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>待办事项</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button id="pushAllBtn" class="push-all-btn" title="推送所有待办任务">📤</button>
+            <div class="header-content">
+                <h1>📝 待办事项</h1>
+                <p class="subtitle">管理您的任务，提高工作效率</p>
+            </div>
+            <div class="header-actions">
+                <button id="fileBtn" class="file-btn" title="文件管理">📁</button>
+                <button id="configBtn" class="config-btn" title="配置企业微信">⚙️</button>
+            </div>
+        </header>
+
+        <div class="input-section">
+            <input 
+                type="text" 
+                id="taskInput" 
+                placeholder="输入新任务..." 
+                autocomplete="off"
+                class="task-input"
+            >
+            <input 
+                type="text" 
+                id="assigneeInput" 
+                placeholder="负责人" 
+                value="子墨"
+                autocomplete="off"
+                class="assignee-input"
+            >
+            <input 
+                type="date" 
+                id="deadlineInput" 
+                class="deadline-input"
+                title="截止日期"
+            >
+            <button id="addBtn" class="btn btn-primary">添加</button>
+        </div>
+
+        <div class="filter-section">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="active">待完成</button>
+            <button class="filter-btn" data-filter="completed">已完成</button>
+        </div>
+
+        <div class="stats">
+            <span id="taskCount">0 个任务</span>
+            <span id="completedCount">0 个已完成</span>
+        </div>
+
+        <ul id="taskList" class="task-list">
+            <!-- 任务列表将动态生成 -->
+        </ul>
+
+        <div id="emptyState" class="empty-state">
+            <p>🎉 还没有任务，添加一个开始吧！</p>
+        </div>
+    </div>
+
+    <!-- 配置对话框 -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>企业微信配置</h2>
+                <button class="modal-close" onclick="app.closeConfigModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label for="webhookInput">Webhook 地址：</label>
+                <input 
+                    type="text" 
+                    id="webhookInput" 
+                    placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=..."
+                    class="webhook-input"
+                >
+                <p class="help-text">请输入企业微信机器人的 Webhook 地址</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeConfigModal()">取消</button>
+                <button class="btn btn-primary" onclick="app.saveWebhook()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认对话框 -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>确认推送</h2>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">确定要推送此任务到企业微信吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeConfirmModal()">取消</button>
+                <button class="btn btn-primary" onclick="app.confirmPush()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文件管理对话框 -->
+    <div id="fileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>文件管理</h2>
+                <button class="modal-close" onclick="app.closeFileModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="help-text">数据将自动保存到本地文件"待办事项数据.json"，确保数据持久化存储。</p>
+                <p class="help-text" style="font-size: 11px; color: #999; margin-top: 5px;">
+                    首次使用时，系统会自动提示您选择文件保存位置。之后数据会自动保存，无需手动操作。
+                </p>
+                <div class="file-actions">
+                    <button class="btn btn-primary" onclick="app.selectFile()">重新选择文件位置</button>
+                    <button class="btn btn-secondary" onclick="app.downloadData()">下载数据文件（备份）</button>
+                    <button class="btn btn-secondary" onclick="app.uploadData()">从文件导入</button>
+                </div>
+                <div id="fileStatus" class="file-status"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeFileModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+
+    <script src="app.js"></script>
+</body>
+</html>
